@@ -98,13 +98,3 @@ No license file is included in this repository. If you own this code, consider a
 ## Contact
 
 Repository owner: `anggrainyshia` (on GitHub). For questions, open an issue.
-
----
-
-If you want, I can:
-
-- add a CONTRIBUTING.md
-- add a basic MIT `LICENSE` file
-- generate a short developer checklist for running and debugging the app
-
-Tell me which of these you want next.
