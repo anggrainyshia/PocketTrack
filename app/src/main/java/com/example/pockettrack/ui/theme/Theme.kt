@@ -4,28 +4,51 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-val SagePrimary   = Color(0xFF5A9467)
-val SageLight     = Color(0xFF8FBC96)
-val SageDark      = Color(0xFF3D7A52)
-val SageContainer = Color(0xFFC8E6C9)
-val Background    = Color(0xFFF4F9F5)
-val IncomeGreen   = Color(0xFF2E7D32)
-val ExpenseRed    = Color(0xFFC62828)
-val CardBg        = Color(0xFFFFFFFF)
+// ── Light: clean emerald on near-white ────────────────────────────────────
+private val EmeraldLight = lightColorScheme(
+    primary             = Emerald600,
+    onPrimary           = Color.White,
+    primaryContainer    = Emerald100,
+    onPrimaryContainer  = Emerald900,
+    secondary           = Emerald400,
+    onSecondary         = Color.White,
+    secondaryContainer  = Emerald50,
+    onSecondaryContainer= Emerald700,
+    background          = LightBackground,
+    onBackground        = LightOnBg,
+    surface             = LightSurface,
+    onSurface           = LightOnBg,
+    surfaceVariant      = Emerald50,
+    onSurfaceVariant    = Emerald700,
+    error               = ExpenseRed,
+    outline             = Emerald200
+)
 
-private val SagePalette = lightColorScheme(
-    primary          = SagePrimary,
-    onPrimary        = Color.White,
-    primaryContainer = SageContainer,
-    secondary        = SageLight,
-    background       = Background,
-    surface          = CardBg,
-    onBackground     = Color(0xFF1A1A1A),
-    onSurface        = Color(0xFF1A1A1A),
-    error            = Color(0xFFC62828)
+// ── Dark: futuristic deep-green with glowing emerald primaries ─────────────
+private val EmeraldDark = darkColorScheme(
+    primary             = Emerald400,
+    onPrimary           = Emerald900,
+    primaryContainer    = Emerald700,
+    onPrimaryContainer  = Emerald100,
+    secondary           = Emerald500,
+    onSecondary         = Color.Black,
+    secondaryContainer  = DarkSurface2,
+    onSecondaryContainer= Emerald200,
+    background          = DarkBackground,
+    onBackground        = DarkOnBg,
+    surface             = DarkSurface,
+    onSurface           = DarkOnSurface,
+    surfaceVariant      = DarkSurface2,
+    onSurfaceVariant    = Emerald200,
+    error               = Color(0xFFFF6B6B),
+    outline             = Emerald700
 )
 
 @Composable
-fun PocketTrackTheme(content: @Composable () -> Unit) {
-    MaterialTheme(colorScheme = SagePalette, typography = Typography(), content = content)
+fun PocketTrackTheme(darkTheme: Boolean = false, content: @Composable () -> Unit) {
+    MaterialTheme(
+        colorScheme = if (darkTheme) EmeraldDark else EmeraldLight,
+        typography  = Typography(),
+        content     = content
+    )
 }

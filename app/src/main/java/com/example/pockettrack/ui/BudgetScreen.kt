@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pockettrack.data.Budget
@@ -23,7 +24,7 @@ import com.example.pockettrack.viewmodel.CurrencyManager
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BudgetScreen(vm: AppViewModel) {
-    val currency    = vm.currency.observeAsState("USD").value
+    val currency    = vm.currency.observeAsState("IDR").value
     val month       = vm.currentMonth
     val budgets     = vm.budgetsByMonth(month).observeAsState(emptyList()).value
     val categories  = vm.allCategories.observeAsState(emptyList()).value
@@ -57,6 +58,7 @@ fun BudgetScreen(vm: AppViewModel) {
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0),
         topBar = { TopAppBar(title = { Text("Budget — $month") }) },
         floatingActionButton = {
             FloatingActionButton(onClick = { showAdd = true }) { Icon(Icons.Default.Add, "Add Budget") }
@@ -65,8 +67,8 @@ fun BudgetScreen(vm: AppViewModel) {
         if (budgets.isEmpty()) {
             Box(Modifier.padding(padding).fillMaxSize(), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("No budgets set.", color = Color.Gray)
-                    Text("Tap + to add one for this month.", color = Color.Gray, fontSize = 13.sp)
+                    Text("No budgets set.", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+                    Text("Tap + to add one for this month.", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f), fontSize = 13.sp)
                 }
             }
         } else {
@@ -80,15 +82,25 @@ fun BudgetScreen(vm: AppViewModel) {
 
                     Card(Modifier.fillMaxWidth()) {
                         Column(Modifier.padding(16.dp)) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
+                            Row(verticalAlignment = Alignment.Top) {
                                 Text(cat?.icon ?: "📦", fontSize = 24.sp)
                                 Spacer(Modifier.width(10.dp))
                                 Column(Modifier.weight(1f)) {
                                     Text(cat?.name ?: "Unknown", fontWeight = FontWeight.SemiBold)
-                                    Text("Limit: ${CurrencyManager.format(limit, currency)}", fontSize = 12.sp, color = Color.Gray)
+                                    Text("Limit: ${CurrencyManager.format(limit, currency)}", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
                                 }
-                                IconButton(onClick = { editBudget = budget }) { Icon(Icons.Default.Edit, null, tint = Color.Gray) }
-                                IconButton(onClick = { deleteBudget = budget }) { Icon(Icons.Default.Delete, null, tint = Color.Gray) }
+                            }
+                            Spacer(Modifier.height(8.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                IconButton(onClick = { editBudget = budget }, modifier = Modifier.size(36.dp)) {
+                                    Icon(Icons.Default.Edit, null, tint = Color.Gray, modifier = Modifier.size(18.dp))
+                                }
+                                IconButton(onClick = { deleteBudget = budget }, modifier = Modifier.size(36.dp)) {
+                                    Icon(Icons.Default.Delete, null, tint = Color.Gray, modifier = Modifier.size(18.dp))
+                                }
                             }
                             Spacer(Modifier.height(8.dp))
                             LinearProgressIndicator(
@@ -99,21 +111,23 @@ fun BudgetScreen(vm: AppViewModel) {
                                     progress > 0.7 -> Color(0xFFF59E0B)
                                     else           -> SagePrimary
                                 },
-                                trackColor = Color(0xFFE0E0E0)
+                                trackColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)
                             )
                             Spacer(Modifier.height(6.dp))
-                            Row {
+                            Row(verticalAlignment = Alignment.Top) {
                                 Text(
                                     "Spent: ${CurrencyManager.format(spent, currency)}",
                                     fontSize = 13.sp,
                                     color = if (over) ExpenseRed else Color.Gray,
                                     modifier = Modifier.weight(1f)
                                 )
+                                Spacer(Modifier.width(8.dp))
                                 Text(
                                     "${(progress * 100).toInt()}%",
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = if (over) ExpenseRed else SagePrimary
+                                    color = if (over) ExpenseRed else SagePrimary,
+                                    textAlign = TextAlign.End
                                 )
                             }
                             if (over) {
@@ -126,7 +140,7 @@ fun BudgetScreen(vm: AppViewModel) {
                         }
                     }
                 }
-                item { Spacer(Modifier.height(72.dp)) }
+                item { Spacer(Modifier.height(96.dp)) }
             }
         }
     }
@@ -155,7 +169,10 @@ fun BudgetDialog(
                             label = { Text("${cat.icon} ${cat.name}") })
                     }
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.Top
+                ) {
                     OutlinedTextField(
                         value = limitStr, onValueChange = { limitStr = it },
                         label = { Text("Limit") }, modifier = Modifier.weight(1f),

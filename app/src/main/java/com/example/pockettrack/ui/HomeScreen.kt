@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,7 +32,7 @@ import java.time.LocalDate
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(nav: NavController, vm: AppViewModel) {
-    val currency     = vm.currency.observeAsState("USD").value
+    val currency     = vm.currency.observeAsState("IDR").value
     val allTx        = vm.allTransactions.observeAsState(emptyList()).value
     val categories   = vm.allCategories.observeAsState(emptyList()).value
     val budgets      = vm.allBudgets.observeAsState(emptyList()).value
@@ -54,6 +55,7 @@ fun HomeScreen(nav: NavController, vm: AppViewModel) {
     val weekExpense  = vm.totalInCurrency(weekTx, "Expense", currency)
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0),
         topBar = {
             TopAppBar(
                 title = { Text("Pocket Track") },
@@ -61,7 +63,7 @@ fun HomeScreen(nav: NavController, vm: AppViewModel) {
                     Text(
                         currency,
                         modifier = Modifier.padding(end = 16.dp),
-                        color = SagePrimary,
+                        color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -90,19 +92,45 @@ fun HomeScreen(nav: NavController, vm: AppViewModel) {
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
                         Text("Total Balance", color = Color.White.copy(.8f), fontSize = 13.sp)
-                        Text(CurrencyManager.format(balance, currency), color = Color.White, fontSize = 34.sp, fontWeight = FontWeight.Bold)
+                        Text(
+                            CurrencyManager.format(balance, currency),
+                            color = Color.White,
+                            fontSize = 34.sp,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center
+                        )
                         Spacer(Modifier.height(16.dp))
-                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
                                 Text("This Month Income", color = Color.White.copy(.7f), fontSize = 11.sp)
-                                Text(CurrencyManager.format(income, currency), color = Color(0xFF80FFAA), fontWeight = FontWeight.SemiBold)
+                                Text(
+                                    CurrencyManager.format(income, currency),
+                                    color = Color(0xFF80FFAA),
+                                    fontWeight = FontWeight.SemiBold,
+                                    textAlign = TextAlign.Center
+                                )
                             }
                             Divider(Modifier
                                 .height(40.dp)
                                 .width(1.dp), color = Color.White.copy(.3f))
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
                                 Text("This Month Expense", color = Color.White.copy(.7f), fontSize = 11.sp)
-                                Text(CurrencyManager.format(expense, currency), color = Color(0xFFFF8080), fontWeight = FontWeight.SemiBold)
+                                Text(
+                                    CurrencyManager.format(expense, currency),
+                                    color = Color(0xFFFF8080),
+                                    fontWeight = FontWeight.SemiBold,
+                                    textAlign = TextAlign.Center
+                                )
                             }
                         }
                     }
@@ -115,7 +143,7 @@ fun HomeScreen(nav: NavController, vm: AppViewModel) {
                     Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                         Column(Modifier.weight(1f)) {
                             Text("This Week", fontWeight = FontWeight.SemiBold)
-                            Text("Spent so far", fontSize = 12.sp, color = Color.Gray)
+                            Text("Spent so far", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
                         }
                         Text(CurrencyManager.format(weekExpense, currency), color = ExpenseRed, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                     }
@@ -144,7 +172,7 @@ fun HomeScreen(nav: NavController, vm: AppViewModel) {
                                     Text(cat?.name ?: "Unknown", fontWeight = FontWeight.Medium, fontSize = 14.sp)
                                     Text(
                                         "${CurrencyManager.format(spent, currency)} / ${CurrencyManager.format(limit, currency)}",
-                                        fontSize = 12.sp, color = Color.Gray
+                                        fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                                     )
                                 }
                                 Text(
@@ -159,8 +187,8 @@ fun HomeScreen(nav: NavController, vm: AppViewModel) {
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(6.dp),
-                                color = if (overBudget) ExpenseRed else SagePrimary,
-                                trackColor = Color(0xFFE0E0E0)
+                                color = if (overBudget) ExpenseRed else MaterialTheme.colorScheme.primary,
+                                trackColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)
                             )
                         }
                     }
@@ -175,11 +203,17 @@ fun HomeScreen(nav: NavController, vm: AppViewModel) {
                         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                             topCats.forEach { (catId, amt) ->
                                 val cat = categories.find { it.id == catId }
-                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                Row(verticalAlignment = Alignment.Top) {
                                     Text(cat?.icon ?: "📦", fontSize = 22.sp)
                                     Spacer(Modifier.width(10.dp))
                                     Text(cat?.name ?: "Unknown", Modifier.weight(1f))
-                                    Text(CurrencyManager.format(amt, currency), color = ExpenseRed, fontWeight = FontWeight.SemiBold)
+                                    Spacer(Modifier.width(8.dp))
+                                    Text(
+                                        CurrencyManager.format(amt, currency),
+                                        color = ExpenseRed,
+                                        fontWeight = FontWeight.SemiBold,
+                                        textAlign = TextAlign.End
+                                    )
                                 }
                             }
                         }
@@ -190,13 +224,14 @@ fun HomeScreen(nav: NavController, vm: AppViewModel) {
             // Recent transactions
             item { Text("Recent Transactions", fontWeight = FontWeight.SemiBold, fontSize = 16.sp) }
             if (recent.isEmpty()) {
-                item { Text("No transactions yet. Tap + to add one!", color = Color.Gray) }
+                item { Text("No transactions yet. Tap + to add one!", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)) }
             } else {
                 items(recent) { tx ->
                     TxCard(tx, categories, currency, onClick = { nav.navigate("edit/${tx.id}") })
                 }
             }
-            item { Spacer(Modifier.height(8.dp)) }
+            // Extra clearance so the FAB never covers the last item
+            item { Spacer(Modifier.height(88.dp)) }
         }
     }
 }
@@ -207,36 +242,82 @@ fun TxCard(tx: Transaction, categories: List<Category>, currency: String, onClic
     val cat = categories.find { it.id == tx.categoryId }
     val isIncome = tx.type == "Income"
     val displayAmt = CurrencyManager.fromUsd(tx.amountInUsd, currency)
+
+    // Income: emerald tinted card; Expense: red tinted card
+    val cardBg = if (isIncome)
+        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.55f)
+    else
+        MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.45f)
+
+    val accentColor = if (isIncome)
+        MaterialTheme.colorScheme.primary
+    else
+        MaterialTheme.colorScheme.error
+
     Card(
         modifier = Modifier.fillMaxWidth(),
-        onClick = onClick
+        onClick = onClick,
+        colors = CardDefaults.cardColors(containerColor = cardBg)
     ) {
-        Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Left colored accent stripe
+            Box(
+                Modifier
+                    .width(3.dp)
+                    .height(44.dp)
+                    .background(accentColor, RoundedCornerShape(2.dp))
+            )
+            Spacer(Modifier.width(10.dp))
+            // Category icon with accent-tinted background
             Box(
                 Modifier
                     .size(42.dp)
-                    .background(
-                        Color(
-                            android.graphics.Color.parseColor(
-                                cat?.color ?: "#9CA3AF"
-                            )
-                        ).copy(.15f),
-                        RoundedCornerShape(12.dp)
-                    ), contentAlignment = Alignment.Center
-            ) { Text(cat?.icon ?: "📦", fontSize = 20.sp) }
+                    .background(accentColor.copy(alpha = 0.15f), RoundedCornerShape(12.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(cat?.icon ?: "📦", fontSize = 20.sp)
+            }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Text(tx.title, fontWeight = FontWeight.Medium, fontSize = 14.sp)
-                Text("${cat?.name ?: "?"} • ${tx.date}", fontSize = 12.sp, color = Color.Gray)
-                if (tx.note.isNotBlank()) Text(tx.note, fontSize = 11.sp, color = Color.Gray)
+                Text(tx.title, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                Text(
+                    "${cat?.name ?: "?"} • ${tx.date}",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                )
+                if (tx.note.isNotBlank()) {
+                    Text(
+                        tx.note,
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                    )
+                }
+                if (tx.isAutoGenerated) {
+                    Text(
+                        "🔁 Auto-recurring",
+                        fontSize = 10.sp,
+                        color = accentColor.copy(alpha = 0.75f),
+                        fontWeight = FontWeight.Medium
+                    )
+                }
             }
+            Spacer(Modifier.width(8.dp))
             Column(horizontalAlignment = Alignment.End) {
                 Text(
                     "${if (isIncome) "+" else "-"}${CurrencyManager.format(displayAmt, currency)}",
-                    color = if (isIncome) IncomeGreen else ExpenseRed,
-                    fontWeight = FontWeight.Bold, fontSize = 14.sp
+                    color = accentColor,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.End
                 )
-                Text(tx.currency, fontSize = 11.sp, color = Color.Gray)
+                Text(
+                    tx.currency,
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                )
             }
         }
     }

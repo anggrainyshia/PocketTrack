@@ -48,7 +48,7 @@ fun CategoryScreen(vm: AppViewModel) {
                 }
                 Text(
                     "Existing transactions won't be deleted.",
-                    fontSize = 12.sp, color = Color.Gray
+                    fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
             },
             confirmLabel = "Delete",
@@ -85,6 +85,7 @@ fun CategoryScreen(vm: AppViewModel) {
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0),
         topBar = { TopAppBar(title = { Text("Categories") }) },
         floatingActionButton = {
             FloatingActionButton(onClick = { showAddDialog = true }) {
@@ -112,7 +113,7 @@ fun CategoryScreen(vm: AppViewModel) {
 
             if (filtered.isEmpty()) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("No $filterType categories yet.\nTap + to add one.", color = Color.Gray)
+                    Text("No $filterType categories yet.\nTap + to add one.", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
                 }
             } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -126,7 +127,7 @@ fun CategoryScreen(vm: AppViewModel) {
                             onAddSub = { addSubParent = cat }
                         )
                     }
-                    item { Spacer(Modifier.height(80.dp)) }
+                    item { Spacer(Modifier.height(96.dp)) }
                 }
             }
         }
@@ -155,7 +156,7 @@ fun CategoryCard(
         Column(Modifier.padding(12.dp)) {
 
             // ── Parent row ──
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(verticalAlignment = Alignment.Top) {
                 Box(
                     Modifier
                         .size(44.dp)
@@ -169,26 +170,36 @@ fun CategoryCard(
                     Text(category.name, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
                     Text(
                         "${subCategories.size} sub-categor${if (subCategories.size == 1) "y" else "ies"}",
-                        fontSize = 12.sp, color = Color.Gray
+                        fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
                 }
+            }
 
-                // Add sub-category button
-                IconButton(onClick = onAddSub) {
-                    Icon(Icons.Default.AddCircleOutline, "Add sub-category", tint = iconColor)
+            Spacer(Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                IconButton(onClick = onAddSub, modifier = Modifier.size(36.dp)) {
+                    Icon(
+                        Icons.Default.AddCircleOutline,
+                        "Add sub-category",
+                        tint = iconColor,
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
-                IconButton(onClick = { onEdit(category) }) {
-                    Icon(Icons.Default.Edit, "Edit", tint = Color.Gray)
+                IconButton(onClick = { onEdit(category) }, modifier = Modifier.size(36.dp)) {
+                    Icon(Icons.Default.Edit, "Edit", tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f), modifier = Modifier.size(18.dp))
                 }
-                IconButton(onClick = { onDelete(category) }) {
-                    Icon(Icons.Default.Delete, "Delete", tint = Color.Gray)
+                IconButton(onClick = { onDelete(category) }, modifier = Modifier.size(36.dp)) {
+                    Icon(Icons.Default.Delete, "Delete", tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f), modifier = Modifier.size(18.dp))
                 }
             }
 
             // ── Sub-categories ──
             if (subCategories.isNotEmpty()) {
                 Spacer(Modifier.height(8.dp))
-                Divider(color = Color.Gray.copy(0.1f))
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
                 Spacer(Modifier.height(6.dp))
 
                 subCategories.forEach { sub ->
@@ -200,9 +211,9 @@ fun CategoryCard(
                         Modifier
                             .fillMaxWidth()
                             .padding(start = 12.dp, top = 4.dp, bottom = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.Top
                     ) {
-                        Text("↳", color = Color.Gray, fontSize = 13.sp)
+                        Text("↳", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f), fontSize = 13.sp)
                         Spacer(Modifier.width(6.dp))
                         Box(
                             Modifier
@@ -218,7 +229,7 @@ fun CategoryCard(
                         ) {
                             Icon(
                                 Icons.Default.Edit, "Edit sub",
-                                tint = Color.Gray, modifier = Modifier.size(16.dp)
+                                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f), modifier = Modifier.size(16.dp)
                             )
                         }
                         IconButton(
@@ -227,7 +238,7 @@ fun CategoryCard(
                         ) {
                             Icon(
                                 Icons.Default.Delete, "Delete sub",
-                                tint = Color.Gray, modifier = Modifier.size(16.dp)
+                                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f), modifier = Modifier.size(16.dp)
                             )
                         }
                     }
@@ -276,7 +287,7 @@ fun CategoryDialog(
                 when {
                     isEditing && isSub -> "Edit Sub-Category"
                     isEditing          -> "Edit Category"
-                    isSub              -> "Add Sub-Category to \"${parentCategory?.name}\""
+                    isSub              -> "Add Sub-Category"
                     else               -> "New Category"
                 }
             )
@@ -309,6 +320,14 @@ fun CategoryDialog(
                             )
                         }
                     }
+                }
+
+                if (isSub && parentCategory != null) {
+                    Text(
+                        "Parent: ${parentCategory.icon} ${parentCategory.name}",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    )
                 }
 
                 // Icon picker

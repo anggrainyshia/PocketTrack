@@ -12,10 +12,12 @@ class AppRepository(context: Context) {
 
     // Transactions
     val allTransactions: LiveData<List<Transaction>> = txDao.getAll()
-    fun getByMonth(month: String)     = txDao.getByMonth(month)
-    fun search(q: String)             = txDao.search(q)
-    fun getByCategory(id: Int)        = txDao.getByCategory(id)
-    fun getByType(type: String)       = txDao.getByType(type)
+    fun getByMonth(month: String)          = txDao.getByMonth(month)
+    fun search(q: String)                  = txDao.search(q)
+    fun getByCategory(id: Int)             = txDao.getByCategory(id)
+    fun getByType(type: String)            = txDao.getByType(type)
+    suspend fun getAllSync()               = txDao.getAllSync()
+    suspend fun getRecurringExpenses()    = txDao.getRecurringExpenses()
     suspend fun insertTx(t: Transaction)  = txDao.insert(t)
     suspend fun updateTx(t: Transaction)  = txDao.update(t)
     suspend fun deleteTx(t: Transaction)  = txDao.delete(t)

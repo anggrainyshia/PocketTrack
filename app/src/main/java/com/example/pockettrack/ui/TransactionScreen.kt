@@ -6,11 +6,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
+import androidx.compose.material3.SwipeToDismissBoxValue.EndToStart
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.pockettrack.data.Transaction
@@ -20,7 +22,7 @@ import com.example.pockettrack.viewmodel.CurrencyManager
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionScreen(nav: NavController, vm: AppViewModel) {
-    val currency    = vm.currency.observeAsState("USD").value
+    val currency    = vm.currency.observeAsState("IDR").value
     val categories  = vm.allCategories.observeAsState(emptyList()).value
     var query       by remember { mutableStateOf("") }
     var filterType  by remember { mutableStateOf("All") } // All, Income, Expense
@@ -40,7 +42,7 @@ fun TransactionScreen(nav: NavController, vm: AppViewModel) {
             title = "Delete Transaction",
             message = {
                 Text("Delete \"${t.title}\"?")
-                Text("${if (t.type == "Income") "+" else "-"}${CurrencyManager.format(t.amount, t.currency)}", color = Color.Gray)
+                Text("${if (t.type == "Income") "+" else "-"}${CurrencyManager.format(t.amount, t.currency)}", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
             },
             confirmLabel = "Delete", isDestructive = true,
             onConfirm = { vm.deleteTransaction(t) },
@@ -49,6 +51,7 @@ fun TransactionScreen(nav: NavController, vm: AppViewModel) {
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0),
         topBar = { TopAppBar(title = { Text("Transactions") }) },
         floatingActionButton = {
             FloatingActionButton(onClick = { nav.navigate("add") }) { Icon(Icons.Default.Add, "Add") }
@@ -74,20 +77,55 @@ fun TransactionScreen(nav: NavController, vm: AppViewModel) {
             Spacer(Modifier.height(8.dp))
             if (filtered.isEmpty()) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("No transactions found.", color = Color.Gray)
+                    Text("No transactions found.", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
                 }
             } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(filtered, key = { it.id }) { tx ->
-                        Box {
-                            TxCard(tx, categories, currency, onClick = { nav.navigate("edit/${tx.id}") })
-                            IconButton(
-                                onClick = { txToDelete = tx },
-                                modifier = Modifier.align(Alignment.CenterEnd).padding(end = 4.dp)
-                            ) { Icon(Icons.Default.Delete, null, tint = Color.Gray.copy(.6f)) }
+                        val dismissState = rememberSwipeToDismissBoxState(
+                            confirmValueChange = { value ->
+                                if (value == EndToStart) {
+                                    txToDelete = tx
+                                }
+                                false
+                            },
+                            positionalThreshold = { distance -> distance * 0.3f }
+                        )
+
+                        SwipeToDismissBox(
+                            modifier = Modifier.fillMaxWidth(),
+                            state = dismissState,
+                            enableDismissFromStartToEnd = false,
+                            backgroundContent = {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(end = 20.dp),
+                                    contentAlignment = Alignment.CenterEnd
+                                ) {
+                                    Icon(
+                                        Icons.Default.Delete,
+                                        contentDescription = "Delete",
+                                        tint = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.graphicsLayer {
+                                            alpha = if (
+                                                dismissState.dismissDirection == EndToStart ||
+                                                dismissState.targetValue == EndToStart
+                                            ) 1f else 0f
+                                        }
+                                    )
+                                }
+                            }
+                        ) {
+                            TxCard(
+                                tx,
+                                categories,
+                                currency,
+                                onClick = { nav.navigate("edit/${tx.id}") }
+                            )
                         }
                     }
-                    item { Spacer(Modifier.height(72.dp)) }
+                    item { Spacer(Modifier.height(96.dp)) }
                 }
             }
         }

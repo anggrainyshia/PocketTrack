@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pockettrack.ui.theme.ExpenseRed
@@ -28,7 +29,7 @@ import com.example.pockettrack.viewmodel.CurrencyManager
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InsightScreen(vm: AppViewModel) {
-    val currency    = vm.currency.observeAsState("USD").value
+    val currency    = vm.currency.observeAsState("IDR").value
     val allTx       = vm.allTransactions.observeAsState(emptyList()).value
     val categories  = vm.allCategories.observeAsState(emptyList()).value
     val month       = vm.currentMonth
@@ -49,16 +50,38 @@ fun InsightScreen(vm: AppViewModel) {
             Text("This Month", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
             Spacer(Modifier.height(8.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Card(Modifier.weight(1f), colors = CardDefaults.cardColors(containerColor = IncomeGreen.copy(.1f))) {
+                Card(
+                    Modifier.weight(1f),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f)
+                    )
+                ) {
                     Column(Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("Income", color = IncomeGreen, fontSize = 12.sp)
-                        Text(CurrencyManager.format(totalInc, currency), color = IncomeGreen, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        Text("Income", color = MaterialTheme.colorScheme.primary, fontSize = 12.sp)
+                        Text(
+                            CurrencyManager.format(totalInc, currency),
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
-                Card(Modifier.weight(1f), colors = CardDefaults.cardColors(containerColor = ExpenseRed.copy(.1f))) {
+                Card(
+                    Modifier.weight(1f),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.55f)
+                    )
+                ) {
                     Column(Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("Expense", color = ExpenseRed, fontSize = 12.sp)
-                        Text(CurrencyManager.format(totalExp, currency), color = ExpenseRed, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        Text("Expense", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
+                        Text(
+                            CurrencyManager.format(totalExp, currency),
+                            color = MaterialTheme.colorScheme.error,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
             }
@@ -94,20 +117,21 @@ fun InsightScreen(vm: AppViewModel) {
                 val cat = categories.find { it.id == catId }
                 val pct = if (totalExp > 0) amt / totalExp else 0.0
                 val barColor = try { Color(android.graphics.Color.parseColor(cat?.color ?: "#9CA3AF")) } catch (e: Exception) { Color.Gray }
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(verticalAlignment = Alignment.Top) {
                     Text(cat?.icon ?: "📦", fontSize = 20.sp, modifier = Modifier.width(32.dp))
                     Column(Modifier.weight(1f)) {
                         Row {
                             Text(cat?.name ?: "Unknown", fontSize = 13.sp, modifier = Modifier.weight(1f))
-                            Text("${(pct * 100).toInt()}%", fontSize = 12.sp, color = Color.Gray)
+                            Spacer(Modifier.width(8.dp))
+                            Text("${(pct * 100).toInt()}%", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface.copy(0.6f))
                         }
                         Spacer(Modifier.height(3.dp))
                         LinearProgressIndicator(
                             progress = pct.toFloat(),
                             modifier = Modifier.fillMaxWidth().height(7.dp),
-                            color = barColor, trackColor = Color(0xFFE0E0E0)
+                            color = barColor, trackColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)
                         )
-                        Text(CurrencyManager.format(amt, currency), fontSize = 11.sp, color = Color.Gray)
+                        Text(CurrencyManager.format(amt, currency), fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurface.copy(0.6f))
                     }
                 }
             }
@@ -119,18 +143,25 @@ fun InsightScreen(vm: AppViewModel) {
         if (biggestExpense != null) {
             item {
                 val cat = categories.find { it.id == biggestExpense.categoryId }
-                Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = ExpenseRed.copy(.07f))) {
-                    Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                Card(
+                    Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.4f)
+                    )
+                ) {
+                    Row(Modifier.padding(16.dp), verticalAlignment = Alignment.Top) {
                         Text("🔴", fontSize = 24.sp)
                         Spacer(Modifier.width(12.dp))
                         Column(Modifier.weight(1f)) {
-                            Text("Biggest Expense", fontSize = 12.sp, color = Color.Gray)
+                            Text("Biggest Expense", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface.copy(0.6f))
                             Text(biggestExpense.title, fontWeight = FontWeight.SemiBold)
-                            Text("${cat?.icon} ${cat?.name} • ${biggestExpense.date}", fontSize = 12.sp, color = Color.Gray)
+                            Text("${cat?.icon} ${cat?.name} • ${biggestExpense.date}", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface.copy(0.6f))
                         }
                         Text(
                             CurrencyManager.format(CurrencyManager.fromUsd(biggestExpense.amountInUsd, currency), currency),
-                            color = ExpenseRed, fontWeight = FontWeight.Bold
+                            color = MaterialTheme.colorScheme.error,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.End
                         )
                     }
                 }
@@ -180,7 +211,7 @@ fun LineChart(data: List<Pair<String, Pair<Double, Double>>>) {
         // X labels
         Row(Modifier.fillMaxWidth().align(Alignment.BottomStart), horizontalArrangement = Arrangement.SpaceBetween) {
             data.forEach { (label, _) ->
-                Text(label, fontSize = 10.sp, color = Color.Gray)
+                Text(label, fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
             }
         }
     }
