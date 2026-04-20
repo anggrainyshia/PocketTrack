@@ -5,148 +5,89 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Sage background -->
+    <!-- Hexagon filled body (deep emerald) -->
     <path
-        android:fillColor="#5A9467"
-        android:pathData="M0,0 L108,0 L108,108 L0,108 Z" />
+        android:fillColor="#0A2A1C"
+        android:pathData="M54,24 L80,39 L80,69 L54,84 L28,69 L28,39 Z" />
 
-    <!-- Body (ellipse centered at 50,60, rx=22, ry=18) -->
+    <!-- Outer hexagon stroke (bright emerald glow) -->
     <path
-        android:fillColor="#FFFFFFEB"
-        android:pathData="
-            M50,42
-            C38,42 28,50 28,60
-            C28,70 38,78 50,78
-            C62,78 72,70 72,60
-            C72,50 62,42 50,42 Z" />
-
-    <!-- Head (circle centered at 68,46, r=13) -->
-    <path
-        android:fillColor="#FFFFFFEB"
-        android:pathData="
-            M68,33
-            C61,33 55,39 55,46
-            C55,53 61,59 68,59
-            C75,59 81,53 81,46
-            C81,39 75,33 68,33 Z" />
-
-    <!-- Ear (top-left of head, ~62,33) -->
-    <path
-        android:fillColor="#D4EDDA"
-        android:pathData="
-            M62,33
-            C60,29 56,29 55,33
-            C54,37 57,40 61,39
-            C64,38 64,37 62,33 Z" />
-
-    <!-- Snout (ellipse at ~74,52, rx=6, ry=4) -->
-    <path
-        android:fillColor="#F0C4C4"
-        android:pathData="
-            M74,48
-            C70,48 68,50 68,52
-            C68,54 70,56 74,56
-            C78,56 80,54 80,52
-            C80,50 78,48 74,48 Z" />
-
-    <!-- Left nostril -->
-    <path
-        android:fillColor="#C97A7A"
-        android:pathData="
-            M72,51
-            C71.5,51 71,51.5 71,52
-            C71,52.5 71.5,53 72,53
-            C72.5,53 73,52.5 73,52
-            C73,51.5 72.5,51 72,51 Z" />
-
-    <!-- Right nostril -->
-    <path
-        android:fillColor="#C97A7A"
-        android:pathData="
-            M76,51
-            C75.5,51 75,51.5 75,52
-            C75,52.5 75.5,53 76,53
-            C76.5,53 77,52.5 77,52
-            C77,51.5 76.5,51 76,51 Z" />
-
-    <!-- Eye -->
-    <path
-        android:fillColor="#3D7A52"
-        android:pathData="
-            M66,42
-            C65,42 64.5,42.5 64.5,43.5
-            C64.5,44.5 65,45 66,45
-            C67,45 67.5,44.5 67.5,43.5
-            C67.5,42.5 67,42 66,42 Z" />
-
-    <!-- Coin slot on top of body -->
-    <path
-        android:fillColor="#5A9467"
-        android:pathData="
-            M44,42
-            L56,42
-            C56.8,42 57,42.3 57,43
-            L57,44.5
-            C57,45.2 56.8,45.5 56,45.5
-            L44,45.5
-            C43.2,45.5 43,45.2 43,44.5
-            L43,43
-            C43,42.3 43.2,42 44,42 Z" />
-
-    <!-- Leg 1 -->
-    <path
-        android:fillColor="#FFFFFFD9"
-        android:pathData="
-            M35,72
-            C33,72 32,73 32,75
-            L32,82
-            C32,84 33,85 35,85
-            C37,85 38,84 38,82
-            L38,75
-            C38,73 37,72 35,72 Z" />
-
-    <!-- Leg 2 -->
-    <path
-        android:fillColor="#FFFFFFD9"
-        android:pathData="
-            M43,73
-            C41,73 40,74 40,76
-            L40,82
-            C40,84 41,85 43,85
-            C45,85 46,84 46,82
-            L46,76
-            C46,74 45,73 43,73 Z" />
-
-    <!-- Leg 3 -->
-    <path
-        android:fillColor="#FFFFFFD9"
-        android:pathData="
-            M55,73
-            C53,73 52,74 52,76
-            L52,82
-            C52,84 53,85 55,85
-            C57,85 58,84 58,82
-            L58,76
-            C58,74 57,73 55,73 Z" />
-
-    <!-- Leg 4 -->
-    <path
-        android:fillColor="#FFFFFFD9"
-        android:pathData="
-            M63,72
-            C61,72 60,73 60,75
-            L60,82
-            C60,84 61,85 63,85
-            C65,85 66,84 66,82
-            L66,75
-            C66,73 65,72 63,72 Z" />
-
-    <!-- Tail (left side of body) -->
-    <path
-        android:strokeColor="#FFFFFFCC"
-        android:strokeWidth="2.5"
-        android:strokeLineCap="round"
         android:fillColor="#00000000"
-        android:pathData="M29,57 Q22,52 24,46 Q26,40 31,45" />
+        android:strokeColor="#34D399"
+        android:strokeWidth="2"
+        android:pathData="M54,24 L80,39 L80,69 L54,84 L28,69 L28,39 Z" />
+
+    <!-- Inner hexagon ring (dimmer accent) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#059669"
+        android:strokeWidth="0.8"
+        android:pathData="M54,32 L73,43 L73,65 L54,76 L35,65 L35,43 Z" />
+
+    <!-- Vertex connector spokes (outer → inner) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#059669"
+        android:strokeWidth="0.6"
+        android:pathData="M54,24 L54,32 M80,39 L73,43 M80,69 L73,65
+                          M54,84 L54,76 M28,69 L35,65 M28,39 L35,43" />
+
+    <!-- Bar 1 — short, left (deep emerald) -->
+    <path
+        android:fillColor="#047857"
+        android:pathData="M39,62 L45,62 L45,68 L39,68 Z" />
+
+    <!-- Bar 2 — medium, center (mid emerald) -->
+    <path
+        android:fillColor="#10B981"
+        android:pathData="M47,55 L53,55 L53,68 L47,68 Z" />
+
+    <!-- Bar 3 — tall, right (bright emerald) -->
+    <path
+        android:fillColor="#34D399"
+        android:pathData="M55,44 L61,44 L61,68 L55,68 Z" />
+
+    <!-- Trend line connecting bar tops -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#6EE7B7"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M42,62 L50,55 L58,44" />
+
+    <!-- Arrowhead at trend line tip -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#6EE7B7"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M54,44 L58,40 L62,44" />
+
+    <!-- Accent dots at each hexagon vertex -->
+    <path
+        android:fillColor="#34D399"
+        android:pathData="M52,24 A2,2,0,1,0,56,24 A2,2,0,1,0,52,24 Z" />
+    <path
+        android:fillColor="#34D399"
+        android:pathData="M78,39 A2,2,0,1,0,82,39 A2,2,0,1,0,78,39 Z" />
+    <path
+        android:fillColor="#34D399"
+        android:pathData="M78,69 A2,2,0,1,0,82,69 A2,2,0,1,0,78,69 Z" />
+    <path
+        android:fillColor="#34D399"
+        android:pathData="M52,84 A2,2,0,1,0,56,84 A2,2,0,1,0,52,84 Z" />
+    <path
+        android:fillColor="#34D399"
+        android:pathData="M26,69 A2,2,0,1,0,30,69 A2,2,0,1,0,26,69 Z" />
+    <path
+        android:fillColor="#34D399"
+        android:pathData="M26,39 A2,2,0,1,0,30,39 A2,2,0,1,0,26,39 Z" />
+
+    <!-- Top-center sparkle highlight -->
+    <path
+        android:fillColor="#A7F3D0"
+        android:pathData="M54,26 L56,31 L54,29.5 L52,31 Z" />
 
 </vector>

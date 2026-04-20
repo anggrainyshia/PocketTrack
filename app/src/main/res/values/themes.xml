@@ -20,9 +20,9 @@
 
     <!-- Splash screen style -->
     <style name="Theme.PocketTrack.Splash" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/emerald_700</item>
+        <item name="windowSplashScreenBackground">@color/dark_background</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-        <item name="windowSplashScreenIconBackgroundColor">@color/emerald_900</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/dark_surface</item>
         <item name="postSplashScreenTheme">@style/Theme.PocketTrack</item>
     </style>
 

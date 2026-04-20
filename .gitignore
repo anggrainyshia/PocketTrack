@@ -19,3 +19,6 @@ local.properties
 # Misc
 .DS_Store
 captures/
+
+# Personal Claude Code plugin (local only)
+*.plugin
