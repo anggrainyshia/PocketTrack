@@ -33,6 +33,7 @@ class AppRepository(context: Context) {
     // Budgets
     val allBudgets: LiveData<List<Budget>>        = budDao.getAll()
     fun budgetsByMonth(m: String)                 = budDao.getByMonth(m)
+    suspend fun getBudgetsByMonthSync(m: String)  = budDao.getByMonthSync(m)
     suspend fun insertBudget(b: Budget)           = budDao.insert(b)
     suspend fun updateBudget(b: Budget)           = budDao.update(b)
     suspend fun deleteBudget(b: Budget)           = budDao.delete(b)

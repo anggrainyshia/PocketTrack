@@ -13,7 +13,6 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import com.example.pockettrack.ui.AppNavigation
-import com.example.pockettrack.ui.SplashScreen
 import com.example.pockettrack.ui.theme.PocketTrackTheme
 import com.example.pockettrack.viewmodel.AppViewModel
 
@@ -45,12 +44,7 @@ class MainActivity : ComponentActivity() {
             }
 
             PocketTrackTheme(darkTheme = isDark) {
-                var showSplash by remember { mutableStateOf(true) }
-                if (showSplash) {
-                    SplashScreen(onFinished = { showSplash = false })
-                } else {
-                    AppNavigation(vm)
-                }
+                AppNavigation(vm)
             }
         }
     }

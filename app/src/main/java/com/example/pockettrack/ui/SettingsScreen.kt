@@ -2,6 +2,8 @@ package com.example.pockettrack.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -32,7 +34,9 @@ fun SettingsScreen(nav: NavController, vm: AppViewModel) {
         TopAppBar(title = { Text("Settings") })
 
         Column(
-            Modifier.padding(16.dp),
+            Modifier
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             // ── Preferences section ──
@@ -123,7 +127,7 @@ fun SettingsScreen(nav: NavController, vm: AppViewModel) {
                                 Text(
                                     "${CurrencyManager.symbols[currency]} $currency",
                                     maxLines = 1,
-                                    overflow = TextOverflow.Clip
+                                    overflow = TextOverflow.Ellipsis
                                 )
                                 Spacer(Modifier.width(4.dp))
                                 ExposedDropdownMenuDefaults.TrailingIcon(currencyExpanded)
@@ -236,15 +240,12 @@ fun SettingsScreen(nav: NavController, vm: AppViewModel) {
                         )
                     }
                     Spacer(Modifier.width(8.dp))
-                    IconButton(
-                        onClick = { vm.refreshExchangeRates() },
-                        modifier = Modifier.size(28.dp)
-                    ) {
+                    IconButton(onClick = { vm.refreshExchangeRates() }) {
                         Icon(
                             Icons.Default.Refresh,
                             contentDescription = "Refresh exchange rates",
                             tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }

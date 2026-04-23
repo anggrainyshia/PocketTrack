@@ -16,13 +16,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.pockettrack.data.Category
 import com.example.pockettrack.viewmodel.AppViewModel
 
 // ─── CategoryScreen ─────────────────────────────────────────
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoryScreen(vm: AppViewModel) {
+fun CategoryScreen(nav: NavController, vm: AppViewModel) {
     val categories  = vm.allCategories.observeAsState(emptyList()).value
     val topCats     = categories.filter { it.parentId == 0 }
     var filterType  by remember { mutableStateOf("Expense") }
@@ -86,7 +87,16 @@ fun CategoryScreen(vm: AppViewModel) {
 
     Scaffold(
         contentWindowInsets = WindowInsets(0),
-        topBar = { TopAppBar(title = { Text("Categories") }) },
+        topBar = {
+            TopAppBar(
+                title = { Text("Categories") },
+                navigationIcon = {
+                    IconButton(onClick = { nav.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, "Back")
+                    }
+                }
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(onClick = { showAddDialog = true }) {
                 Icon(Icons.Default.Add, "Add Category")

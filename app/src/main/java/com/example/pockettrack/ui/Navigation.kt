@@ -71,7 +71,7 @@ fun AppNavigation(vm: AppViewModel) {
             }
             composable("budget")       { BudgetScreen(vm) }
             composable("insights")     { InsightScreen(vm) }
-            composable("categories")   { CategoryScreen(vm) }
+            composable("categories")   { CategoryScreen(nav, vm) }
             composable("settings")     { SettingsScreen(nav, vm) }
         }
     }

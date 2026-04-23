@@ -1,11 +1,13 @@
 package com.example.pockettrack.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -36,8 +38,9 @@ fun AddTransactionScreen(nav: NavController, vm: AppViewModel, editId: Int? = nu
     var note        by remember { mutableStateOf(existing?.note ?: "") }
     var date        by remember { mutableStateOf(existing?.date ?: LocalDate.now().toString()) }
     var selCatId    by remember { mutableIntStateOf(existing?.categoryId ?: 0) }
-    var showDialog  by remember { mutableStateOf(false) }
-    var errorMsg    by remember { mutableStateOf("") }
+    var showDialog      by remember { mutableStateOf(false) }
+    var showDatePicker  by remember { mutableStateOf(false) }
+    var errorMsg        by remember { mutableStateOf("") }
 
     // ── Recurring fields ──────────────────────────────────────────────────
     var isRecurring     by remember { mutableStateOf(existing?.isRecurring ?: false) }
@@ -127,11 +130,43 @@ fun AddTransactionScreen(nav: NavController, vm: AppViewModel, editId: Int? = nu
                 }
             }
 
-            // Date
+            // Date picker
             OutlinedTextField(
-                value = date, onValueChange = { date = it },
-                label = { Text("Date (yyyy-MM-dd)") }, modifier = Modifier.fillMaxWidth()
+                value         = date,
+                onValueChange = {},
+                readOnly      = true,
+                label         = { Text("Date") },
+                trailingIcon  = {
+                    IconButton(onClick = { showDatePicker = true }) {
+                        Icon(Icons.Default.DateRange, "Pick date")
+                    }
+                },
+                modifier      = Modifier.fillMaxWidth().clickable { showDatePicker = true }
             )
+
+            if (showDatePicker) {
+                val initialMillis = runCatching {
+                    java.time.LocalDate.parse(date).toEpochDay() * 86_400_000L
+                }.getOrDefault(System.currentTimeMillis())
+                val dpState = rememberDatePickerState(initialSelectedDateMillis = initialMillis)
+                DatePickerDialog(
+                    onDismissRequest = { showDatePicker = false },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            dpState.selectedDateMillis?.let { millis ->
+                                date = java.time.Instant.ofEpochMilli(millis)
+                                    .atZone(java.time.ZoneOffset.UTC)
+                                    .toLocalDate()
+                                    .toString()
+                            }
+                            showDatePicker = false
+                        }) { Text("OK") }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showDatePicker = false }) { Text("Cancel") }
+                    }
+                ) { DatePicker(state = dpState) }
+            }
 
             // ── Recurring toggle (Expense only) ───────────────────────────
             if (type == "Expense") {

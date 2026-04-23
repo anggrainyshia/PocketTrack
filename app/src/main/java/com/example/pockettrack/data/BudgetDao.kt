@@ -8,6 +8,9 @@ interface BudgetDao {
     @Query("SELECT * FROM budgets WHERE month = :month")
     fun getByMonth(month: String): LiveData<List<Budget>>
 
+    @Query("SELECT * FROM budgets WHERE month = :month")
+    suspend fun getByMonthSync(month: String): List<Budget>
+
     @Query("SELECT * FROM budgets")
     fun getAll(): LiveData<List<Budget>>
 
